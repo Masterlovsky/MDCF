@@ -1,6 +1,6 @@
-'''
+"""
 Test serialize and de-serialize the filter using pickle
-'''
+"""
 
 import unittest
 import pickle
@@ -10,13 +10,13 @@ from cuckoo.filter import CuckooFilter, BCuckooFilter, ScalableCuckooFilter
 
 
 class SerializationTest(unittest.TestCase):
-    '''
+    """
     Test various implementation of Cuckoo filters.
-    '''
+    """
     def test_serialize_static_filters(self):
-        '''
+        """
         Adding and deleting items from the static Cuckoo filters.
-        '''
+        """
         # Use a small capacity filter for testing
         capacity = 128
         # Use the fix error rate of 0.000001 for testing
@@ -116,9 +116,9 @@ class SerializationTest(unittest.TestCase):
 
 
     def test_serialize_dynamic_filter(self):
-        '''
+        """
         Use a filter with dynamic bucket size
-        '''
+        """
         # Use a small capacity filter for testing
         capacity = 2
         # Use the fix error rate of 0.000001 for testing

@@ -1,6 +1,6 @@
-'''
+"""
 Test Cuckoo filter
-'''
+"""
 
 import os
 import timeit
@@ -11,20 +11,20 @@ from cuckoo.filter import CuckooFilter, BCuckooFilter, ScalableCuckooFilter
 
 
 class CuckooTest(unittest.TestCase):
-    '''
+    """
     Test various implementation of Cuckoo filters.
-    '''
+    """
+
     def setUp(self):
-        '''
+        """
         Setup some variables for the test.
-        '''
+        """
         self.enable_load_test = os.environ.get('ENABLE_LOAD_TEST', False)
 
-
     def test_static_filters(self):
-        '''
+        """
         Adding and deleting items from the static Cuckoo filters.
-        '''
+        """
         # Use a small capacity filter for testing
         capacity = 128
         # Use the fix error rate of 0.000001 for testing
@@ -118,12 +118,11 @@ class CuckooTest(unittest.TestCase):
             self.assertEqual(bcuckoo.contains(item), case['included'], 'Item {0} is in the filter'.format(item))
             self.assertEqual(item in bcuckoo, case['included'], 'Item {0} is in the bucket'.format(item))
 
-
     # pylint: disable=no-self-use
     def test_load(self):
-        '''
+        """
         Load a huge number of items and test the filter performance.
-        '''
+        """
         if not self.enable_load_test:
             return
 
@@ -134,11 +133,10 @@ class CuckooTest(unittest.TestCase):
                                         number=number)
         print('# Pre-allocate 100_000_000 buckets in: {}'.format(round(float(allocation_time) / number, 4)))
 
-
     def test_dynamic_capacity_filter(self):
-        '''
+        """
         Use a filter with dynamic bucket size
-        '''
+        """
         # Use a small capacity filter for testing
         capacity = 2
         # Use the fix error rate of 0.000001 for testing

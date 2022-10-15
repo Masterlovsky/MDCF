@@ -1,6 +1,6 @@
-'''
+"""
 Test Cuckoo bucket.
-'''
+"""
 
 import unittest
 
@@ -12,14 +12,14 @@ from cuckoo.bucket import Bucket
 
 
 class BucketTest(unittest.TestCase):
-    '''
+    """
     Test Cuckoo bucket.
-    '''
+    """
 
     def test_bucket(self):
-        '''
+        """
         Adding and deleting items in a bucket.
-        '''
+        """
         bucket = Bucket()
 
         # By default, a bucket has the capacity of 4

@@ -7,7 +7,7 @@ import timeit
 import unittest
 
 from netaddr import IPAddress
-from cuckoo.filter import CuckooFilter, BCuckooFilter, ScalableCuckooFilter
+from cuckoo.filter import CuckooFilter, BCuckooFilter, ScalableBCuckooFilter
 
 
 class CuckooTest(unittest.TestCase):
@@ -142,7 +142,7 @@ class CuckooTest(unittest.TestCase):
         # Use the fix error rate of 0.000001 for testing
         error_rate = 0.000001
 
-        cuckoo = ScalableCuckooFilter(capacity, error_rate, bucket_size=1)
+        cuckoo = ScalableBCuckooFilter(capacity, error_rate, bucket_size=1)
 
         # By default, a bucket has the capacity of 4
         cases = [

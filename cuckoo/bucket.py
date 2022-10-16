@@ -39,6 +39,8 @@ class Bucket(object):
 
         The insertion of duplicate entries is allowed.
         """
+        if self.contains(fingerprint):
+            return True
         if not self.is_full():
             self.bucket.append(fingerprint)
             # When the bucket is not full, just append the fingerprint there
@@ -121,3 +123,55 @@ class Bucket(object):
 
     def __sizeof__(self):
         return super().__sizeof__() + sum(f.__sizeof__() for f in self.bucket)
+
+
+class SuperBucket(Bucket):
+    """
+    Super Bucket class for storing both fingerprint and bit string for set identifications
+    """
+    __slots__ = ('size', 'bucket', 'bit_string')
+
+    def __init__(self, size=4):
+        """
+        Initialize a dynamic or static bucket to keep a set of Cuckoo
+        fingerprints.
+
+        size: The maximum number of fingerprints the bucket can store.
+              Default size is 4, which closely approaches the best size for FPP
+                between 0.00001 and 0.002 (see Fan et al.).
+              If your targeted FPP is greater than 0.002, a bucket size of 2 is
+                more space efficient.
+        """
+        super().__init__(size)
+
+        # The bucket is implemented as an array because it's possible to have
+        # multiple items with the same fingerprints
+        self.bucket = []
+
+    def insert(self, fingerprint):
+        return super().insert(fingerprint)
+
+    def contains(self, fingerprint):
+        return super().contains(fingerprint)
+
+    def find_and_replace(self, look_for, replace_with):
+        return super().find_and_replace(look_for, replace_with)
+
+    def delete(self, fingerprint):
+        return super().delete(fingerprint)
+
+    def swap(self, fingerprint):
+        return super().swap(fingerprint)
+
+    def is_full(self):
+        return super().is_full()
+
+    def __contains__(self, fingerprint):
+        return super().__contains__(fingerprint)
+
+    def __repr__(self):
+        return super().__repr__()
+
+    def __sizeof__(self):
+        return super().__sizeof__()
+

@@ -11,7 +11,7 @@ Cuckoo filters at will. A Cuckoo filter also utilizes space more
 efficiently.
 
 Cuckoo filters were originally described in:
- Fan, B., Andersen, D. G., Kaminsky, M., & Mitzenmacher, M. D. (2014, December).
+ >[1] Fan, B., Andersen, D. G., Kaminsky, M., & Mitzenmacher, M. D. (2014, December).
  Cuckoo filter: Practically better than bloom.
  In Proceedings of the 10th ACM International on Conference on emerging Networking
  Experiments and Technologies (pp. 75-88). ACM.
@@ -118,6 +118,55 @@ for _ in range(1, 100000):
         print '{} has been removed'.format(item)
 ```
 
+Marked Cuckoo filter
+----------------------
+
+The Marked Cuckoo filter is a variant of the classic Cuckoo filter.
+It is designed to store a set of items with a fixed number of bits in the fingerprint field.
+The Marked Cuckoo filter is useful for applications that need to store a large number of items with the set index.
+Use an implementation similar to BCuckoofilter
+
+> reference: [2] Luo L, Guo D, Zhao Y, et al. MCFsyn: A multi-party set reconciliation protocol with the marked cuckoo filter[J]. IEEE Transactions on Parallel and Distributed Systems, 2021, 32(11): 2705-2718.
+
+```python
+import math
+
+from random import randrange
+from cuckoo.filter import MarkedCuckooFilter
+
+capacity = 1000000
+error_rate = 0.000001
+# Create a bit array Cuckoo filter with a fixed capacity of 1000000
+# buckets
+cuckoo = MarkedCuckooFilter(capacity=capacity, error_rate=error_rate)
+
+bucket_size = 6
+# Setting the bucket size is optional, the bigger the bucket,
+# the more numbers of items a filter can hold, and the longer
+# the fingerprint needs to be to stay at the same error rate
+cuckoo = MarkedCuckooFilter(capacity=capacity, error_rate=error_rate, bucket_size=bucket_size)
+
+# The fingerprint length is computed using the following formula:
+fingerprint_size = int(math.ceil(math.log(1.0 / error_rate, 2) + math.log(2 * bucket_size, 2)))
+
+for _ in range(1, 100000):
+    item = randrange(1, 65535)
+    cuckoo.insert_m(str(item), cuckoo.encode_mask('int', item))
+
+    if cuckoo.contains(str(item)):
+        print('{} has been added'.format(item))
+        item_mask = cuckoo.get(str(item))
+        print("Get item id: {}".format(cuckoo.decode_mask(item_mask)))
+
+    cuckoo.delete_m(str(item), cuckoo.encode_mask('int', item))
+
+    if not cuckoo.contains(str(item)):
+        print('{} has been removed'.format(item))
+
+
+```
+
+
 Scalable Cuckoo filter
 ----------------------
 
@@ -133,8 +182,8 @@ filter approaches its capacity, a new one, double in size, will be
 created.  A scalable Cuckoo filter will handle all usual operations
 seamlessly and transparently.
 
-Internally, scalable Cuckoo filter uses bitarray Cuckoo filter for
-efficiency although it can be changed easily.
+Internally, scalable Cuckoo filter could use any type of the Cuckoo filters above for
+and can be changed easily.
 
 ```python
 import math
@@ -158,14 +207,14 @@ cuckoo = ScalableCuckooFilter(initial_capacity=initial_capacity, error_rate=erro
 fingerprint_size = int(math.ceil(math.log(1.0 / error_rate, 2) + math.log(2 * bucket_size, 2)))
 
 for _ in range(1, 100000):
-    item = str(randrange(1, 1000000000))
-    cuckoo.insert(item)
+ item = str(randrange(1, 1000000000))
+ cuckoo.insert(item)
 
-    if cuckoo.contains(item):
-        print '{} has been added'.format(item)
+ if cuckoo.contains(item):
+  print('{} has been added'.format(item))
 
-    cuckoo.delete(item)
+ cuckoo.delete(item)
 
-    if not cuckoo.contains(item):
-        print '{} has been removed'.format(item)
+ if not cuckoo.contains(item):
+  print('{} has been removed'.format(item))
 ```
